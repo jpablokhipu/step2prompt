@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🎨 Mondriart - Prompt Artist Inline</title>
     <style>
         * {
@@ -80,6 +80,14 @@
             position: relative;
             transition: font-size 0.3s ease;
             flex-wrap: wrap;
+        }
+
+        .input-line.input-active {
+            font-size: 1.8em;
+        }
+
+        .input-line.input-shrinking {
+            font-size: 1.3em;
         }
 
         .step-tag {
@@ -186,6 +194,45 @@
             color: #aaaaaa;
         }
 
+        /* Botón de envío tipo WhatsApp para mobile */
+        .send-button {
+            display: none; /* Oculto por defecto en desktop */
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: #4A90E2;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(74, 144, 226, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .send-button.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .send-button:active {
+            transform: translateY(-50%) scale(0.95);
+            background: #3A7BC8;
+        }
+
+        .send-button svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
         .user-input {
             flex: 1;
             background: none;
@@ -207,6 +254,9 @@
             min-height: 1.4em;
             vertical-align: baseline;
             margin-top: 7px;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .editable-input {
@@ -229,6 +279,9 @@
             min-height: 1.4em;
             vertical-align: baseline;
             margin-top: 7px;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .user-input::placeholder {
@@ -369,6 +422,22 @@
             opacity: 1;
         }
 
+        /* Overlay para tooltips en mobile */
+        .tooltip-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .tooltip-overlay.active {
+            display: block;
+        }
+
         .result-prompt {
             font-size: 1.1em;
             line-height: 1.8;
@@ -391,6 +460,10 @@
             cursor: pointer;
             transition: all 0.3s;
             margin: 5px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            min-height: 44px; /* Tamaño mínimo recomendado para touch targets */
         }
 
         .button:hover {
@@ -399,24 +472,315 @@
             transform: translateY(-2px);
         }
 
+        .button:active {
+            transform: translateY(0);
+            opacity: 0.8;
+        }
+
         .hidden {
             display: none;
         }
 
-        /* Responsive */
+        /* Responsive - Mobile Portrait Optimization */
+
+        /* Tablets y pantallas medianas en portrait */
         @media (max-width: 768px) {
-            .prompt-line {
+            body {
+                padding: 15px;
+            }
+
+            .static-question {
+                font-size: 1.6em;
+                margin-bottom: 30px;
+            }
+
+            .input-line,
+            .input-line.input-active {
                 font-size: 1.5em;
+                gap: 10px;
+            }
+
+            .input-line.input-shrinking {
+                font-size: 1.15em;
+            }
+
+            .accumulated-text {
+                font-size: 1.15em;
+            }
+
+            .input-examples {
+                font-size: 1em;
+                margin-top: 20px;
             }
 
             .suggestion-item {
                 font-size: 0.9em;
             }
+
+            .result-prompt {
+                font-size: 1em;
+            }
+
+            .button {
+                font-size: 0.95em;
+                padding: 10px 20px;
+            }
         }
 
+        /* Móviles en portrait */
         @media (max-width: 480px) {
-            .prompt-line {
+            body {
+                padding: 12px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .container {
+                min-height: auto;
+            }
+
+            .brand-mark {
+                font-size: 0.85em;
+                margin-bottom: 12px;
+            }
+
+            .static-question {
+                font-size: 1.4em;
+                margin-bottom: 25px;
+                line-height: 1.2;
+            }
+
+            .input-line,
+            .input-line.input-active {
+                font-size: 1.3em;
+                gap: 0;
+                margin-bottom: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .input-line.input-shrinking {
+                font-size: 1em;
+            }
+
+            /* Step tag en su propia fila */
+            .step-tag {
+                margin-top: 0;
+                margin-bottom: 6px;
+                align-self: flex-start;
+            }
+
+            /* Prefix en su propia fila */
+            .input-prefix {
+                margin-top: 0;
+                margin-bottom: 4px;
+                width: 100%;
+            }
+
+            /* Input wrapper ancho completo */
+            .input-wrapper {
+                width: 100%;
+                flex-basis: 100%;
+            }
+
+            /* Agrupar accumulated text items en columna */
+            .accumulated-text div {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0;
+            }
+
+            .accumulated-text .step-tag {
+                margin-bottom: 3px;
+            }
+
+            .accumulated-text .input-prefix {
+                margin-bottom: 0px;
+            }
+
+            .accumulated-text {
+                font-size: 1em;
+                margin-bottom: 15px;
+            }
+
+            .accumulated-text div {
+                gap: 10px;
+            }
+
+            .step-tag {
+                font-size: 0.35em;
+                padding: 3px 10px;
+                margin-top: 8px;
+            }
+
+            .input-prefix {
+                font-size: 0.85em;
+                margin-top: 8px;
+            }
+
+            .user-input,
+            .editable-input {
+                font-size: 0.85em;
+                margin-top: 5px;
+            }
+
+            .input-examples {
+                font-size: 0.9em;
+                margin-top: 15px;
+                line-height: 1.4;
+            }
+
+            .tip-container {
+                font-size: 0.85em;
+                padding: 6px 10px;
+                margin-top: 10px;
+            }
+
+            .result-container {
+                padding: 20px;
+                margin-top: 30px;
+            }
+
+            .result-title {
+                font-size: 1.1em;
+                margin-bottom: 15px;
+            }
+
+            .result-prompt {
+                font-size: 0.95em;
+                padding: 15px;
+                line-height: 1.6;
+            }
+
+            .button {
+                font-size: 0.9em;
+                padding: 10px 16px;
+                margin: 3px;
+            }
+
+            /* Tooltip adaptado para mobile */
+            .result-title {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 8px;
+            }
+
+            .tooltip-container {
+                position: relative;
+            }
+
+            /* El tooltip aparece centrado en pantalla */
+            .tooltip-text {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                right: auto;
+                bottom: auto;
+                transform: translate(-50%, -50%);
+                width: 85vw;
+                max-width: 320px;
+                font-size: 0.75em;
+                z-index: 10000;
+                padding: 16px 20px;
+            }
+
+            .tooltip-text::before {
+                display: none;
+            }
+
+            /* En mobile, deshabilitar hover y usar tap */
+            .tooltip-container:hover .tooltip-text {
+                visibility: hidden;
+                opacity: 0;
+            }
+
+            /* Mostrar tooltip solo cuando tiene clase active */
+            .tooltip-container.active .tooltip-text {
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            /* Hacer el icono más grande y visible */
+            .tooltip-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 0.8em;
+            }
+
+            /* Mostrar botón de envío en mobile y ocultar enter icon */
+            .send-button {
+                display: flex;
+            }
+
+            .enter-icon {
+                display: none;
+            }
+        }
+
+        /* Móviles muy pequeños (< 360px) */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+                padding-top: 15px;
+            }
+
+            .static-question {
                 font-size: 1.2em;
+                margin-bottom: 20px;
+            }
+
+            .input-line,
+            .input-line.input-active {
+                font-size: 1.15em;
+                gap: 0;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .input-line.input-shrinking {
+                font-size: 0.95em;
+            }
+
+            .step-tag {
+                margin-bottom: 5px;
+            }
+
+            .input-prefix {
+                width: 100%;
+                margin-bottom: 3px;
+            }
+
+            .input-wrapper {
+                width: 100%;
+            }
+
+            .accumulated-text {
+                font-size: 0.95em;
+            }
+
+            .input-examples {
+                font-size: 0.85em;
+            }
+
+            .result-prompt {
+                font-size: 0.9em;
+            }
+
+            .button {
+                font-size: 0.85em;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Ajuste específico para botones finales en mobile */
+        @media (max-width: 600px) {
+            .input-line > div[style*="display: flex"] {
+                flex-direction: column !important;
+            }
+
+            .input-line > div[style*="display: flex"] .button {
+                width: 100%;
+                margin: 5px 0;
             }
         }
     </style>
@@ -435,7 +799,7 @@
         <div class="accumulated-text" id="accumulatedText"></div>
 
         <!-- Línea de input actual -->
-        <div class="input-line" id="inputLine">
+        <div class="input-line input-active" id="inputLine">
             <span class="step-tag" id="stepTag">SUJETO</span>
             <span class="input-prefix">La imagen de</span>
             <div class="input-wrapper">
@@ -443,6 +807,11 @@
                 <div class="enter-icon" id="enterIcon">
                     <span class="enter-arrow"></span>
                 </div>
+                <button class="send-button" id="sendButton" type="button">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -588,6 +957,7 @@
         let stepTag = document.getElementById('stepTag');
         const inputExamples = document.getElementById('inputExamples');
         let enterIcon = document.getElementById('enterIcon');
+        let sendButton = document.getElementById('sendButton');
         const suggestionsContainer = document.getElementById('suggestionsContainer');
         const resultContainer = document.getElementById('resultContainer');
         const resultTitle = document.getElementById('resultTitle');
@@ -766,7 +1136,8 @@
 
             // Animar la reducción: hacer que la línea actual se encoja antes de moverse
             const inputLine = document.getElementById('inputLine');
-            inputLine.style.fontSize = '1.3em';
+            inputLine.classList.remove('input-active');
+            inputLine.classList.add('input-shrinking');
 
             setTimeout(() => {
                 // Construir línea completa con tag y prefix
@@ -803,7 +1174,8 @@
                 }
 
                 // Restaurar tamaño grande para el siguiente input
-                inputLine.style.fontSize = '1.8em';
+                inputLine.classList.remove('input-shrinking');
+                inputLine.classList.add('input-active');
 
                 // Actualizar input para el nuevo paso
                 updateInputForStep();
@@ -952,10 +1324,12 @@
                 autoExpandTextarea();
                 updateWordCount();
                 enterIcon.classList.remove('visible');
+                if (sendButton) sendButton.classList.remove('visible');
                 clearTimeout(typingTimer);
                 if (userInput.value.trim().length > 0) {
                     typingTimer = setTimeout(() => {
                         enterIcon.classList.add('visible');
+                        if (sendButton) sendButton.classList.add('visible');
                     }, typingDelay);
                 }
             });
@@ -969,9 +1343,19 @@
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     enterIcon.classList.remove('visible');
+                    if (sendButton) sendButton.classList.remove('visible');
                     addFragment();
                 }
             });
+
+            // Re-adjuntar listener del botón de envío
+            if (sendButton) {
+                sendButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sendButton.classList.remove('visible');
+                    addFragment();
+                });
+            }
         }
 
         // ===== SISTEMA DE ENRIQUECIMIENTO AUTOMÁTICO =====
@@ -1282,16 +1666,22 @@
                     <div class="enter-icon" id="enterIcon">
                         <span class="enter-arrow"></span>
                     </div>
+                    <button class="send-button" id="sendButton" type="button">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
                 </div>
             `;
             inputLine.style.display = 'flex';
-            inputLine.style.fontSize = '1.8em';
+            inputLine.classList.add('input-active');
 
             // Actualizar referencias DOM a los nuevos elementos
             userInput = document.getElementById('userInput');
             inputPrefix = document.querySelector('.input-prefix');
             stepTag = document.getElementById('stepTag');
             enterIcon = document.getElementById('enterIcon');
+            sendButton = document.getElementById('sendButton');
 
             // Mostrar contenedores
             suggestionsContainer.style.display = 'block';
@@ -1318,19 +1708,30 @@
             autoExpandTextarea();
             updateWordCount();
 
-            // Ocultar icono mientras escribe
+            // Ocultar iconos mientras escribe
             enterIcon.classList.remove('visible');
+            if (sendButton) sendButton.classList.remove('visible');
 
             // Resetear timer
             clearTimeout(typingTimer);
 
-            // Si hay texto, mostrar icono después de parar de escribir
+            // Si hay texto, mostrar icono/botón después de parar de escribir
             if (userInput.value.trim().length > 0) {
                 typingTimer = setTimeout(() => {
                     enterIcon.classList.add('visible');
+                    if (sendButton) sendButton.classList.add('visible');
                 }, typingDelay);
             }
         });
+
+        // Event listener para el botón de envío (mobile)
+        if (sendButton) {
+            sendButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                sendButton.classList.remove('visible');
+                addFragment();
+            });
+        }
 
         userInput.addEventListener('keydown', (e) => {
             // Ctrl+Enter para generar prompt (antes de completar los 5 pasos)
@@ -1349,10 +1750,52 @@
         });
 
         // Mantener focus en el input
-        document.addEventListener('click', () => {
+        document.addEventListener('click', (e) => {
             if (!resultContainer.classList.contains('hidden')) return;
+
+            // No enfocar si se hace click en un tooltip
+            if (e.target.closest('.tooltip-icon') || e.target.closest('.tooltip-text')) {
+                return;
+            }
+
             userInput.focus();
         });
+
+        // Manejar tooltips en mobile con tap usando event delegation
+        document.addEventListener('click', (e) => {
+            const isMobile = window.innerWidth <= 480;
+
+            if (!isMobile) return;
+
+            const tooltipIcon = e.target.closest('.tooltip-icon');
+
+            if (tooltipIcon) {
+                console.log('Tooltip icon clicked in mobile');
+                e.preventDefault();
+                e.stopPropagation();
+
+                const container = tooltipIcon.closest('.tooltip-container');
+                const wasActive = container.classList.contains('active');
+
+                console.log('Was active:', wasActive);
+
+                // Cerrar todos los tooltips
+                document.querySelectorAll('.tooltip-container').forEach(tc => {
+                    tc.classList.remove('active');
+                });
+
+                // Toggle del tooltip actual
+                if (!wasActive) {
+                    container.classList.add('active');
+                    console.log('Tooltip activated');
+                }
+            } else if (!e.target.closest('.tooltip-text')) {
+                // Cerrar tooltips si se hace click fuera
+                document.querySelectorAll('.tooltip-container').forEach(tc => {
+                    tc.classList.remove('active');
+                });
+            }
+        }, true); // Usar capture phase para asegurarse de capturar el evento
     </script>
 </body>
 </html>
