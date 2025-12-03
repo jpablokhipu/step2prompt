@@ -303,6 +303,70 @@
             margin-bottom: 20px;
             font-weight: bold;
             color: #2c2c2c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #666;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7em;
+            cursor: help;
+            font-weight: normal;
+            transition: all 0.3s;
+        }
+
+        .tooltip-icon:hover {
+            background: #333;
+            transform: scale(1.1);
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.65em;
+            font-weight: normal;
+            line-height: 1.5;
+            width: 280px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-text::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 8px solid transparent;
+            border-right-color: #333;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
         }
 
         .result-prompt {
@@ -393,10 +457,10 @@
 
 
         <div class="result-container hidden" id="resultContainer">
-            <div class="result-title">✨ Tu Prompt Generado</div>
+            <div class="result-title" id="resultTitle">✨ Tu prompt generado</div>
             <div class="result-prompt" id="resultPrompt"></div>
-            <button class="button" onclick="copyToClipboard()">📋 Copiar Prompt</button>
-            <button class="button" onclick="restart()">🔄 Crear Nuevo</button>
+            <button class="button" onclick="copyToClipboard()">📋 Copiar prompt</button>
+            <button class="button" onclick="restart()">🔄 Crear nuevo</button>
         </div>
     </div>
 
@@ -526,6 +590,7 @@
         let enterIcon = document.getElementById('enterIcon');
         const suggestionsContainer = document.getElementById('suggestionsContainer');
         const resultContainer = document.getElementById('resultContainer');
+        const resultTitle = document.getElementById('resultTitle');
         const resultPrompt = document.getElementById('resultPrompt');
 
         // Control de typing timeout
@@ -568,7 +633,9 @@
             // Detectar persona/personaje
             const personaKeywords = ['persona', 'mujer', 'hombre', 'niño', 'niña', 'bailarina', 'bailarín',
                                      'modelo', 'artista', 'atleta', 'profesional', 'anciano', 'anciana',
-                                     'joven', 'chef', 'músico', 'actor', 'actriz', 'retrato', 'humano'];
+                                     'joven', 'chef', 'músico', 'actor', 'actriz', 'retrato', 'humano',
+                                     // Keywords adicionales de alta confianza
+                                     'rostro', 'cara', 'selfie', 'autorretrato', 'gente', 'individuo', 'sujeto'];
             if (personaKeywords.some(kw => texto.includes(kw))) {
                 return 'persona';
             }
@@ -577,7 +644,9 @@
             const paisajeKeywords = ['paisaje', 'ciudad', 'urbano', 'playa', 'montaña', 'bosque',
                                      'calle', 'parque', 'jardín', 'valle', 'desierto', 'océano',
                                      'atardecer', 'amanecer', 'naturaleza', 'escena', 'horizonte',
-                                     'cielo', 'mar', 'río', 'lago', 'costa'];
+                                     'cielo', 'mar', 'río', 'lago', 'costa',
+                                     // Keywords adicionales de alta confianza
+                                     'panorama', 'vista', 'escenario', 'campo', 'camino', 'sendero', 'cascada'];
             if (paisajeKeywords.some(kw => texto.includes(kw))) {
                 return 'paisaje';
             }
@@ -586,7 +655,9 @@
             const objetoKeywords = ['coche', 'auto', 'reloj', 'producto', 'objeto', 'teléfono',
                                    'zapato', 'botella', 'comida', 'plato', 'joya', 'mueble',
                                    'dispositivo', 'instrumento', 'herramienta', 'vehículo',
-                                   'máquina', 'edificio', 'estructura'];
+                                   'máquina', 'edificio', 'estructura',
+                                   // Keywords adicionales de alta confianza
+                                   'artículo', 'ítem', 'pieza'];
             if (objetoKeywords.some(kw => texto.includes(kw))) {
                 return 'objeto';
             }
@@ -752,9 +823,17 @@
         function showFinalOptions() {
             const inputLine = document.getElementById('inputLine');
             inputLine.innerHTML = `
-                <div style="display: flex; gap: 10px; width: 100%;">
-                    <button class="button" onclick="generatePrompt()" style="flex: 1;">✨ Generar Prompt</button>
-                    <button class="button" onclick="editPrompt()" style="flex: 1;">✏️ Editar</button>
+                <div style="display: flex; gap: 8px; width: 100%;">
+                    <button class="button" onclick="generatePrompt()" style="flex: 1; padding: 10px 18px; font-size: 0.9em;">
+                        ✨ Generar prompt
+                    </button>
+                    <button class="button" onclick="generatePromptEnriched()" style="flex: 1; padding: 10px 18px; font-size: 0.9em; line-height: 1.3;">
+                        🎨 Generar prompt enriquecido<br>
+                        <span style="font-size: 0.75em; opacity: 0.7; font-weight: normal;">(Refuerza aspectos técnicos)</span>
+                    </button>
+                    <button class="button" onclick="editPrompt()" style="flex: 1; padding: 10px 18px; font-size: 0.9em;">
+                        ✏️ Editar
+                    </button>
                 </div>
             `;
 
@@ -895,6 +974,85 @@
             });
         }
 
+        // ===== SISTEMA DE ENRIQUECIMIENTO AUTOMÁTICO =====
+        // Plantillas de enriquecimiento basadas en categoría detectada
+        const promptEnhancers = {
+            persona: {
+                composition: [
+                    'composición en tres cuartos de perfil',
+                    'composición centrada con espacio negativo',
+                    'composición siguiendo la regla de tercios',
+                    'encuadre frontal directo y centrado',
+                    'composición con profundidad de campo reducida'
+                ],
+                technicalQuality: 'altamente detallado, fotorrealista, resolución 8K',
+                cameraSpecs: 'fotografiado con Canon EOS R5, lente 85mm f/1.4, profundidad de campo reducida',
+                atmosphere: {
+                    'suave': 'atmósfera suave y serena',
+                    'dramática': 'atmósfera dramática e intensa',
+                    'natural': 'ambiente natural y auténtico',
+                    'dorada': 'atmósfera cálida y luminosa',
+                    'azul': 'ambiente fresco y contemplativo',
+                    'default': 'atmósfera profesional de retrato'
+                },
+                details: 'textura detallada de la piel, expresiones naturales, presencia humana auténtica'
+            },
+
+            paisaje: {
+                composition: [
+                    'composición siguiendo la regla de tercios',
+                    'vista de ángulo amplio panorámico',
+                    'líneas guía que dirigen la mirada',
+                    'composición con profundidad atmosférica',
+                    'encuadre de paisaje con horizonte equilibrado'
+                ],
+                technicalQuality: 'ultra detallado, 8K, definición extrema, fotografía profesional',
+                cameraSpecs: 'fotografía de paisaje, lente gran angular, f/11 para máxima profundidad de campo',
+                atmosphere: {
+                    'dorada': 'atmósfera cálida y serena de hora dorada',
+                    'azul': 'atmósfera tranquila y contemplativa de hora azul',
+                    'dramática': 'atmósfera dramática y poderosa',
+                    'natural': 'perspectiva atmosférica natural',
+                    'suave': 'ambiente suave y etéreo',
+                    'default': 'perspectiva atmosférica natural'
+                },
+                details: 'detalles ambientales ricos, profundidad atmosférica, texturas naturales'
+            },
+
+            objeto: {
+                composition: [
+                    'composición de fotografía de producto',
+                    'fondo minimalista y limpio',
+                    'enfoque en el sujeto con encuadre controlado',
+                    'composición centrada con énfasis en el objeto',
+                    'encuadre de estudio con iluminación controlada'
+                ],
+                technicalQuality: 'calidad de fotografía comercial, 8K, enfoque preciso y nítido',
+                cameraSpecs: 'lente macro con enfoque preciso, configuración de iluminación de estudio controlada',
+                atmosphere: {
+                    'default': 'ambiente profesional de exhibición de producto'
+                },
+                details: 'texturas precisas de materiales, detalles intrincados, acabado de calidad comercial'
+            }
+        };
+
+        // Función helper para detectar el mood de la iluminación
+        function detectLightingMood(iluminacionText) {
+            if (!iluminacionText) return 'default';
+            const text = iluminacionText.toLowerCase();
+            if (text.includes('suave') || text.includes('difusa') || text.includes('soft')) return 'suave';
+            if (text.includes('dramática') || text.includes('intensa') || text.includes('dramatic')) return 'dramática';
+            if (text.includes('dorada') || text.includes('golden') || text.includes('atardecer') || text.includes('amanecer')) return 'dorada';
+            if (text.includes('azul') || text.includes('blue hour') || text.includes('crepúsculo')) return 'azul';
+            if (text.includes('natural')) return 'natural';
+            return 'default';
+        }
+
+        // Función helper para selección aleatoria
+        function randomChoice(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
         // Generar prompt final
         function generatePrompt() {
             if (userTexts.length === 0) {
@@ -974,7 +1132,122 @@
             // Unir todas las oraciones
             const prompt = promptSentences.join(' ');
 
-            // Mostrar resultado
+            // Mostrar resultado (sin tooltip)
+            resultTitle.innerHTML = '✨ Tu prompt generado';
+            resultPrompt.textContent = prompt;
+            resultContainer.classList.remove('hidden');
+            window.generatedPrompt = prompt;
+        }
+
+        // Generar prompt final ENRIQUECIDO con elementos profesionales automáticos
+        function generatePromptEnriched() {
+            if (userTexts.length === 0) {
+                alert('Escribe algo primero para generar el prompt');
+                return;
+            }
+
+            // Ocultar interfaz de input
+            document.getElementById('inputLine').style.display = 'none';
+            suggestionsContainer.style.display = 'none';
+            accumulatedText.style.display = 'none';
+
+            // Extraer los textos del usuario (sin prefijos conversacionales)
+            const sujeto = userTexts[0] || '';
+            const accion = userTexts[1] || '';
+            const entorno = userTexts[2] || '';
+            const estilo = userTexts[3] || '';
+            const iluminacion = userTexts[4] || '';
+            const detalles = userTexts[5] || '';
+
+            // Seleccionar el enriquecedor apropiado según la categoría detectada
+            const enhancer = promptEnhancers[subjectCategory] || promptEnhancers.objeto;
+
+            // Detectar mood basado en la iluminación del usuario
+            const lightingMood = detectLightingMood(iluminacion);
+            const atmosphereText = enhancer.atmosphere[lightingMood] || enhancer.atmosphere.default;
+
+            // Construir prompt narrativo profesional enriquecido
+            let promptSentences = [];
+
+            // Oración 1: Sujeto + Acción + Entorno (igual que antes)
+            let mainDescription = '';
+            if (sujeto) {
+                mainDescription = sujeto.charAt(0).toUpperCase() + sujeto.slice(1);
+            }
+            if (accion) {
+                mainDescription += mainDescription ? ', ' + accion : accion.charAt(0).toUpperCase() + accion.slice(1);
+            }
+            if (entorno) {
+                const enPrepend = entorno.toLowerCase().startsWith('en ') ? '' : 'en ';
+                mainDescription += mainDescription ? ', ' + enPrepend + entorno : (enPrepend + entorno).charAt(0).toUpperCase() + (enPrepend + entorno).slice(1);
+            }
+            if (mainDescription) {
+                promptSentences.push(mainDescription + '.');
+            }
+
+            // Oración 2: Estilo + Iluminación (igual que antes)
+            let styleDescription = '';
+            if (estilo) {
+                const needsPrefix = !estilo.toLowerCase().match(/^(fotografía|ilustración|render|estilo|pintura|arte)/);
+                styleDescription = needsPrefix ? 'Estilo de ' + estilo : estilo.charAt(0).toUpperCase() + estilo.slice(1);
+            }
+            if (iluminacion) {
+                let iluminacionText = iluminacion;
+                const iluminacionLower = iluminacion.toLowerCase();
+
+                if (!iluminacionLower.includes('iluminación')) {
+                    iluminacionText = 'iluminación ' + iluminacion;
+                }
+
+                iluminacionText = iluminacionText.replace(/iluminación\s+iluminación/gi, 'iluminación');
+
+                const conPrepend = iluminacionText.toLowerCase().startsWith('con ') ? '' : 'con ';
+                styleDescription += styleDescription ? ' ' + conPrepend + iluminacionText : (conPrepend + iluminacionText).charAt(0).toUpperCase() + (conPrepend + iluminacionText).slice(1);
+            }
+            if (styleDescription) {
+                promptSentences.push(styleDescription + '.');
+            }
+
+            // Oración 3: Composición + Atmósfera (NUEVA - Enriquecida)
+            const compositionText = randomChoice(enhancer.composition);
+            const compositionSentence = `${compositionText.charAt(0).toUpperCase() + compositionText.slice(1)}, ${atmosphereText}.`;
+            promptSentences.push(compositionSentence);
+
+            // Oración 4: Especificaciones técnicas de cámara (NUEVA - Enriquecida)
+            const cameraSpecsSentence = enhancer.cameraSpecs.charAt(0).toUpperCase() + enhancer.cameraSpecs.slice(1) + '.';
+            promptSentences.push(cameraSpecsSentence);
+
+            // Oración 5: Calidad técnica (NUEVA - Enriquecida)
+            const qualitySentence = enhancer.technicalQuality.charAt(0).toUpperCase() + enhancer.technicalQuality.slice(1) + '.';
+            promptSentences.push(qualitySentence);
+
+            // Oración 6: Detalles del usuario + Detalles enriquecidos
+            if (detalles) {
+                const needsPrefix = !detalles.toLowerCase().match(/^(destaca|destacan|incluye|presenta|con|tiene)/);
+                const detailsText = needsPrefix ? 'Destaca ' + detalles : detalles.charAt(0).toUpperCase() + detalles.slice(1);
+
+                // Si el usuario puso detalles cortos, agregar los detalles enriquecidos
+                if (detalles.split(' ').length < 10) {
+                    promptSentences.push(`${detailsText}, ${enhancer.details}.`);
+                } else {
+                    promptSentences.push(detailsText + '.');
+                }
+            } else {
+                // Si el usuario no puso detalles, agregar solo los enriquecidos
+                promptSentences.push(enhancer.details.charAt(0).toUpperCase() + enhancer.details.slice(1) + '.');
+            }
+
+            // Unir todas las oraciones
+            const prompt = promptSentences.join(' ');
+
+            // Mostrar resultado con tooltip explicativo
+            resultTitle.innerHTML = `
+                🎨 Tu prompt enriquecido
+                <div class="tooltip-container">
+                    <span class="tooltip-icon">i</span>
+                    <span class="tooltip-text">Incluye presets de estilo técnico, compositivo y atmosférico que se agregan automáticamente si la imagen es de una persona, un paisaje o un producto.</span>
+                </div>
+            `;
             resultPrompt.textContent = prompt;
             resultContainer.classList.remove('hidden');
             window.generatedPrompt = prompt;
