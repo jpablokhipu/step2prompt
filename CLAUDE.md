@@ -315,6 +315,7 @@ El framework BMAD utiliza tres tipos de placeholders para variables dinámicas:
 - Rama principal no está explícitamente configurada - confirmar antes de crear PRs
 - Ver GIT-CHEATSHEET.md para referencia detallada de comandos
 - Los commits deben ser descriptivos y seguir estilo de commit convencional
+- **IMPORTANTE**: NO hacer commits automáticamente después de cada cambio. Esperar a que el usuario explícitamente solicite guardar en git cuando termine un conjunto de cambios temáticos completo
 
 ## Procedimientos de Testing
 
