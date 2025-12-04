@@ -25,7 +25,7 @@
         .container {
             width: 100%;
             max-width: 900px;
-            text-align: left;
+            text-align: center;
             display: flex;
             flex-direction: column;
             min-height: 60vh;
@@ -34,9 +34,10 @@
         .brand-mark {
             font-size: 0.9em;
             font-weight: 500;
-            margin-bottom: 30px;
+            margin-bottom: 60px;
             font-family: inherit;
             letter-spacing: 0.02em;
+            line-height: 2;
         }
 
         .brand-mark .step {
@@ -48,7 +49,7 @@
         }
 
         .static-question {
-            font-size: 2em;
+            font-size: 1.7em;
             font-weight: 800;
             margin-bottom: 40px;
             color: #2c2c2c;
@@ -58,7 +59,7 @@
         .accumulated-text {
             font-size: 1.3em; /* Más pequeño cuando está resuelto */
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 60px;
             word-wrap: break-word;
             color: #5e5d59;
         }
@@ -67,7 +68,18 @@
             margin-bottom: 10px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 15px;
+        }
+
+        .accumulated-text .step-tag {
+            align-self: center;
+            margin-top: 0;
+        }
+
+        .accumulated-text .input-prefix {
+            align-self: center;
+            margin-top: 0;
         }
 
         .input-line {
@@ -76,6 +88,7 @@
             margin-bottom: 30px;
             display: flex;
             align-items: flex-start;
+            justify-content: center;
             gap: 15px;
             position: relative;
             transition: font-size 0.3s ease;
@@ -119,7 +132,7 @@
 
         .input-prefix {
             color: #2c2c2c;
-            font-size: 0.9em;
+            font-size: 0.8em;
             margin-top: 12px;
             line-height: 1.4;
             display: flex;
@@ -240,7 +253,7 @@
             outline: none;
             color: #2c2c2c;
             font-family: inherit;
-            font-size: 0.8em;
+            font-size: 0.75em;
             min-width: 20px;
             border-bottom: 2px solid #cccccc;
             padding: 5px 5px 0px 5px;
@@ -266,7 +279,7 @@
             outline: none;
             color: #2c2c2c;
             font-family: inherit;
-            font-size: 0.8em;
+            font-size: 0.75em;
             min-width: 20px;
             border-bottom: 2px solid #4a90e2;
             padding: 5px 5px 0px 5px;
@@ -286,7 +299,7 @@
 
         .user-input::placeholder {
             color: #aaaaaa;
-            font-size: 0.8em; /* Mismo tamaño que el texto ingresado */
+            font-size: 1em; /* Mismo tamaño que el texto ingresado */
         }
 
         .input-wrapper {
@@ -789,7 +802,8 @@
     <div class="container">
         <!-- Marca -->
         <div class="brand-mark">
-            <span class="step">step2</span><span class="prompt">prompt</span> | Paso a paso hacia prompts que la IA realmente entiende
+            <span class="step">step2</span><span class="prompt">prompt</span><br>
+            Paso a paso hacia prompts que la IA realmente entiende
         </div>
 
         <!-- Pregunta estática -->
