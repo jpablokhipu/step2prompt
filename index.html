@@ -1010,43 +1010,71 @@
             userInput.style.height = userInput.scrollHeight + 'px';
         }
 
+        // Categorías válidas como enum
+        const VALID_CATEGORIES = ['persona', 'paisaje', 'objeto', 'general'];
+
         // Detectar categoría del sujeto
         function detectSubjectCategory(sujetoText) {
-            const texto = sujetoText.toLowerCase();
+            try {
+                // Validar entrada
+                if (!sujetoText || typeof sujetoText !== 'string') {
+                    console.warn('detectSubjectCategory: entrada inválida, usando categoría general');
+                    return 'general';
+                }
 
-            // Detectar persona/personaje
-            const personaKeywords = ['persona', 'mujer', 'hombre', 'niño', 'niña', 'bailarina', 'bailarín',
-                                     'modelo', 'artista', 'atleta', 'profesional', 'anciano', 'anciana',
-                                     'joven', 'chef', 'músico', 'actor', 'actriz', 'retrato', 'humano',
-                                     // Keywords adicionales de alta confianza
-                                     'rostro', 'cara', 'selfie', 'autorretrato', 'gente', 'individuo', 'sujeto'];
-            if (personaKeywords.some(kw => texto.includes(kw))) {
-                return 'persona';
+                const texto = sujetoText.toLowerCase().trim();
+
+                // Si el texto está vacío después de trim
+                if (!texto) {
+                    return 'general';
+                }
+
+                // Detectar persona/personaje
+                const personaKeywords = ['persona', 'mujer', 'hombre', 'niño', 'niña', 'bailarina', 'bailarín',
+                                         'modelo', 'artista', 'atleta', 'profesional', 'anciano', 'anciana',
+                                         'joven', 'chef', 'músico', 'actor', 'actriz', 'retrato', 'humano',
+                                         // Keywords adicionales de alta confianza
+                                         'rostro', 'cara', 'selfie', 'autorretrato', 'gente', 'individuo', 'sujeto'];
+                if (personaKeywords.some(kw => texto.includes(kw))) {
+                    return 'persona';
+                }
+
+                // Detectar paisaje/escena
+                const paisajeKeywords = ['paisaje', 'ciudad', 'urbano', 'playa', 'montaña', 'bosque',
+                                         'calle', 'parque', 'jardín', 'valle', 'desierto', 'océano',
+                                         'atardecer', 'amanecer', 'naturaleza', 'escena', 'horizonte',
+                                         'cielo', 'mar', 'río', 'lago', 'costa',
+                                         // Keywords adicionales de alta confianza
+                                         'panorama', 'vista', 'escenario', 'campo', 'camino', 'sendero', 'cascada'];
+                if (paisajeKeywords.some(kw => texto.includes(kw))) {
+                    return 'paisaje';
+                }
+
+                // Detectar objeto/producto
+                const objetoKeywords = ['coche', 'auto', 'reloj', 'producto', 'objeto', 'teléfono',
+                                       'zapato', 'botella', 'comida', 'plato', 'joya', 'mueble',
+                                       'dispositivo', 'instrumento', 'herramienta', 'vehículo',
+                                       'máquina', 'edificio', 'estructura',
+                                       // Keywords adicionales de alta confianza
+                                       'artículo', 'ítem', 'pieza'];
+                if (objetoKeywords.some(kw => texto.includes(kw))) {
+                    return 'objeto';
+                }
+
+                return 'general';
+            } catch (error) {
+                console.error('Error en detectSubjectCategory:', error);
+                return 'general'; // Valor por defecto seguro
             }
+        }
 
-            // Detectar paisaje/escena
-            const paisajeKeywords = ['paisaje', 'ciudad', 'urbano', 'playa', 'montaña', 'bosque',
-                                     'calle', 'parque', 'jardín', 'valle', 'desierto', 'océano',
-                                     'atardecer', 'amanecer', 'naturaleza', 'escena', 'horizonte',
-                                     'cielo', 'mar', 'río', 'lago', 'costa',
-                                     // Keywords adicionales de alta confianza
-                                     'panorama', 'vista', 'escenario', 'campo', 'camino', 'sendero', 'cascada'];
-            if (paisajeKeywords.some(kw => texto.includes(kw))) {
-                return 'paisaje';
+        // Función para validar que la categoría es válida
+        function validateCategory(category) {
+            if (!VALID_CATEGORIES.includes(category)) {
+                console.warn(`Categoría inválida: ${category}, usando 'general'`);
+                return 'general';
             }
-
-            // Detectar objeto/producto
-            const objetoKeywords = ['coche', 'auto', 'reloj', 'producto', 'objeto', 'teléfono',
-                                   'zapato', 'botella', 'comida', 'plato', 'joya', 'mueble',
-                                   'dispositivo', 'instrumento', 'herramienta', 'vehículo',
-                                   'máquina', 'edificio', 'estructura',
-                                   // Keywords adicionales de alta confianza
-                                   'artículo', 'ítem', 'pieza'];
-            if (objetoKeywords.some(kw => texto.includes(kw))) {
-                return 'objeto';
-            }
-
-            return 'general';
+            return category;
         }
 
         // Filtrar sugerencias basado en texto actual
@@ -1154,6 +1182,12 @@
             inputLine.classList.add('input-shrinking');
 
             setTimeout(() => {
+                // Validar que estamos en un paso válido antes de acceder al array
+                if (currentStep < 0 || currentStep >= dialogSteps.length) {
+                    console.error('Error: currentStep fuera de límites:', currentStep);
+                    return;
+                }
+
                 // Construir línea completa con tag y prefix
                 const currentTag = dialogSteps[currentStep].tag.toUpperCase();
                 const currentPrefix = dialogSteps[currentStep].prefix;
@@ -1162,15 +1196,30 @@
                 const punctuation = currentTag === 'ESTILO' ? '' : '.';
                 const fullLine = `<span class="step-tag completed">${currentTag}</span>${currentPrefix} ${text}${punctuation}`;
 
+                // Límite de seguridad para evitar desbordamiento de memoria
+                const MAX_ACCUMULATED_ITEMS = 100; // Límite generoso para sesiones normales
+
                 // Agregar al contenido acumulado (para visualización)
                 accumulatedContent.push(fullLine);
+
+                // Limitar el tamaño del array si excede el límite
+                if (accumulatedContent.length > MAX_ACCUMULATED_ITEMS) {
+                    console.warn('Límite de elementos acumulados alcanzado, removiendo elementos antiguos');
+                    accumulatedContent = accumulatedContent.slice(-MAX_ACCUMULATED_ITEMS);
+                }
 
                 // Guardar solo el texto del usuario (sin tags ni prefijos)
                 userTexts.push(text);
 
+                // Aplicar mismo límite a userTexts
+                if (userTexts.length > MAX_ACCUMULATED_ITEMS) {
+                    userTexts = userTexts.slice(-MAX_ACCUMULATED_ITEMS);
+                }
+
                 // Detectar categoría del sujeto en el primer paso
                 if (currentStep === 0) {
-                    subjectCategory = detectSubjectCategory(text);
+                    const detectedCategory = detectSubjectCategory(text);
+                    subjectCategory = validateCategory(detectedCategory); // Aplicar validación
                     console.log('Categoría detectada:', subjectCategory);
                 }
 

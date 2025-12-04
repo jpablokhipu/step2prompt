@@ -2,6 +2,10 @@
 
 Este archivo proporciona orientación a Claude Code (claude.ai/code) al trabajar con código en este repositorio.
 
+## Preferencias de Comunicación
+
+**IMPORTANTE**: Claude debe comunicarse SIEMPRE en español con el usuario. Todas las respuestas, explicaciones, mensajes y documentación deben estar en español, a menos que el usuario solicite explícitamente otro idioma.
+
 ## Descripción General del Proyecto
 
 Este repositorio contiene **Step2Prompt (anteriormente Mondriart)**, un generador conversacional de prompts para creación de imágenes con IA, junto con el sistema **BMAD (Better Methodology for Agentic Development)** - un framework para construir y orquestar agentes de IA especializados.
@@ -286,6 +290,24 @@ Consultar TODO.md para detalles completos sobre características planificadas.
 - Los disparadores de menú usan asteriscos (*) no viñetas de markdown
 - Los workflows son ejecutados por `bmad/core/tasks/workflow.xml` - nunca omitir esto
 - Cargar recursos en tiempo de ejecución, nunca pre-cargar (principio BMAD)
+
+### Sintaxis de Placeholders en BMAD
+El framework BMAD utiliza tres tipos de placeholders para variables dinámicas:
+
+1. **Variables Simples**: `{variable}`
+   - Uso: Referencias a rutas y variables de configuración
+   - Ejemplos: `{project-root}`, `{user_name}`, `{communication_language}`
+   - Se resuelven desde config.yaml o contexto del sistema
+
+2. **Referencias a Campos YAML**: `{source}:field`
+   - Uso: Extraer valores específicos de archivos YAML
+   - Ejemplo: `{config_source}:output_folder`
+   - Lee el campo 'output_folder' del archivo especificado en 'config_source'
+
+3. **Valores Generados Dinámicamente**: `{{variable}}`
+   - Uso: Valores que se generan en tiempo de ejecución
+   - Ejemplo: `{{date}}` genera timestamp actual
+   - Se procesan al momento de ejecutar el workflow/tarea
 
 ### Flujo de Trabajo Git
 - Rama de trabajo actual: `step2prompt`

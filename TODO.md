@@ -7,6 +7,63 @@
 - ✅ Detección inteligente de mood basado en iluminación
 - ✅ Templates profesionales por categoría (persona/paisaje/objeto)
 - ✅ Composiciones aleatorias variadas
+- ✅ Layout centralizado
+- ✅ Ajustes de espaciado y alineación vertical
+
+---
+
+## 🌙 PENDIENTE: IMPLEMENTACIÓN DE MODO OSCURO
+
+### Plan Detallado para Conversión a Modo Oscuro Cálido
+
+**Decisiones de Diseño:**
+- Fondo: Gris carbón medio (#2c2c2c - #363636)
+- Acentos: Mantener colores originales (rojo #DC143C, azul #4A90E2)
+- Temperatura: Cálido (tonos marrones/sepia)
+
+**Paleta de Colores Propuesta:**
+
+**Fondos:**
+- Fondo principal (body): `#2c2825` (gris carbón con tinte marrón cálido)
+- Contenedores secundarios: `#363330` (gris medio cálido)
+- Cajas de resultados: `#3d3936` (gris cálido más claro)
+- Inputs/áreas de texto: `#443f3b` (gris cálido para contraste)
+
+**Textos:**
+- Texto principal: `#e8e6e3` (casi blanco cálido)
+- Texto secundario: `#c4c0bb` (gris cálido claro)
+- Texto acumulado: `#a8a39d` (gris cálido medio)
+
+**Acentos (ajustados para contraste):**
+- Rojo "prompt": `#DC143C` → `#ff4757` (ligeramente más brillante)
+- Azul interactivo: `#4A90E2` → `#5da9ff` (más luminoso)
+- Verde completado: `#2D7A4F` → `#3dbd73` (más brillante)
+
+**Bordes:**
+- Bordes principales: `#4a4540` (marrón grisáceo)
+- Bordes sutiles: `#3d3936`
+- Bordes activos: `#5da9ff` (azul brillante)
+
+**Tareas a Realizar:**
+- [ ] Reemplazar ~25 valores de color en la sección `<style>` (líneas 7-786)
+- [ ] Ajustar body background de `#F9F8F4` a `#2c2825`
+- [ ] Invertir todos los colores de texto (oscuros → claros cálidos)
+- [ ] Invertir todos los fondos (claros → oscuros cálidos)
+- [ ] Ajustar opacidades de sombras y overlays
+- [ ] Hacer placeholders de inputs más claros para visibilidad
+- [ ] Ajustar step tags con bordes más brillantes
+- [ ] Invertir esquema de botones (fondo oscuro, hover claro)
+- [ ] Ajustar tooltips con fondo más claro
+- [ ] Revisar send button mobile y ajustar sombra
+- [ ] Actualizar tips containers con tonos cálidos
+- [ ] Verificar responsive en todos los breakpoints
+- [ ] Probar legibilidad y contraste en diferentes pantallas
+
+**Archivo a Modificar:**
+- `/Users/juanp./Proyectos/Prompt/index.html` (sección CSS)
+
+**Resultado Esperado:**
+Un modo oscuro cálido y acogedor que reduce fatiga visual, mantiene la identidad de marca, y mejora la legibilidad con contrastes apropiados.
 
 ---
 
