@@ -494,6 +494,90 @@
             display: none;
         }
 
+        /* Estilos para opciones técnicas de radio buttons */
+        .technical-options {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .options-group {
+            margin-bottom: 15px;
+        }
+
+        .options-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .options-group-title {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .radio-option {
+            position: relative;
+            display: inline-block;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-label {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            background: #4A90E2;
+            color: white;
+            border-color: #4A90E2;
+            box-shadow: 0 2px 4px rgba(74, 144, 226, 0.3);
+        }
+
+        .radio-option input[type="radio"]:hover + .radio-label {
+            border-color: #4A90E2;
+            background: #f0f7ff;
+        }
+
+        .radio-option input[type="radio"]:checked:hover + .radio-label {
+            background: #3a7bc8;
+            border-color: #3a7bc8;
+        }
+
+        /* Badge para mostrar las opciones seleccionadas en el prompt */
+        .technical-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
         /* Responsive - Mobile Portrait Optimization */
 
         /* Tablets y pantallas medianas en portrait */
@@ -795,6 +879,24 @@
                 width: 100%;
                 margin: 5px 0;
             }
+
+            /* Opciones técnicas en móvil */
+            .technical-options {
+                padding: 12px;
+            }
+
+            .radio-group {
+                gap: 6px;
+            }
+
+            .radio-label {
+                font-size: 0.8em;
+                padding: 5px 10px;
+            }
+
+            .options-group-title {
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
@@ -842,6 +944,80 @@
         <div class="result-container hidden" id="resultContainer">
             <div class="result-title" id="resultTitle">✨ Tu prompt generado</div>
             <div class="result-prompt" id="resultPrompt"></div>
+
+            <!-- Opciones técnicas -->
+            <div class="technical-options">
+                <!-- Opciones de Plano -->
+                <div class="options-group">
+                    <div class="options-group-title">📷 Plano</div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="" checked onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Sin especificar</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="extreme close-up shot" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Primerísimo primer plano</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="close-up shot" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Primer plano</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="medium shot" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Plano medio</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="full body shot" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Plano entero</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="wide shot" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Plano general</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="shot" value="aerial shot" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Plano aéreo</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Opciones de Orientación -->
+                <div class="options-group">
+                    <div class="options-group-title">🖼️ Orientación</div>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="" checked onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Sin especificar</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="vertical 9:16" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Vertical 9:16</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="vertical 3:4" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Vertical 3:4</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="square 1:1" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Cuadrado 1:1</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="horizontal 4:3" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Horizontal 4:3</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="horizontal 16:9" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Horizontal 16:9</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="orientation" value="ultrawide 21:9" onchange="updatePromptWithOptions()">
+                            <span class="radio-label">Ultra ancho 21:9</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <button class="button" onclick="copyToClipboard()">📋 Copiar prompt</button>
             <button class="button" onclick="restart()">🔄 Crear nuevo</button>
         </div>
@@ -856,6 +1032,9 @@
         let wordCount = 0;
         let currentStep = 0;
         let subjectCategory = 'general'; // persona, paisaje, objeto, o general
+        let basePrompt = ''; // Prompt base sin opciones técnicas
+        let currentShot = ''; // Plano seleccionado
+        let currentOrientation = ''; // Orientación seleccionada
 
         // Configuración de pasos del diálogo con ejemplos contextuales
         const dialogSteps = [
@@ -1442,7 +1621,7 @@
                     'azul': 'ambiente fresco y contemplativo',
                     'default': 'atmósfera profesional de retrato'
                 },
-                details: 'textura detallada de la piel, expresiones naturales, presencia humana auténtica'
+                details: 'detalles finos y texturas realistas, calidad profesional'
             },
 
             paisaje: {
@@ -1463,7 +1642,7 @@
                     'suave': 'ambiente suave y etéreo',
                     'default': 'perspectiva atmosférica natural'
                 },
-                details: 'detalles ambientales ricos, profundidad atmosférica, texturas naturales'
+                details: 'detalles ambientales ricos y texturas naturales'
             },
 
             objeto: {
@@ -1479,7 +1658,7 @@
                 atmosphere: {
                     'default': 'ambiente profesional de exhibición de producto'
                 },
-                details: 'texturas precisas de materiales, detalles intrincados, acabado de calidad comercial'
+                details: 'texturas precisas y detalles nítidos'
             }
         };
 
@@ -1578,6 +1757,15 @@
 
             // Unir todas las oraciones
             const prompt = promptSentences.join(' ');
+
+            // Guardar prompt base para actualización con opciones técnicas
+            basePrompt = prompt;
+
+            // Resetear opciones técnicas
+            document.querySelectorAll('input[name="shot"][value=""]')[0].checked = true;
+            document.querySelectorAll('input[name="orientation"][value=""]')[0].checked = true;
+            currentShot = '';
+            currentOrientation = '';
 
             // Mostrar resultado (sin tooltip)
             resultTitle.innerHTML = '✨ Tu prompt generado';
@@ -1687,6 +1875,15 @@
             // Unir todas las oraciones
             const prompt = promptSentences.join(' ');
 
+            // Guardar prompt base para actualización con opciones técnicas
+            basePrompt = prompt;
+
+            // Resetear opciones técnicas
+            document.querySelectorAll('input[name="shot"][value=""]')[0].checked = true;
+            document.querySelectorAll('input[name="orientation"][value=""]')[0].checked = true;
+            currentShot = '';
+            currentOrientation = '';
+
             // Mostrar resultado con tooltip explicativo
             resultTitle.innerHTML = `
                 🎨 Tu prompt enriquecido
@@ -1698,6 +1895,42 @@
             resultPrompt.textContent = prompt;
             resultContainer.classList.remove('hidden');
             window.generatedPrompt = prompt;
+        }
+
+        // Actualizar prompt con opciones técnicas seleccionadas
+        function updatePromptWithOptions() {
+            // Obtener valores seleccionados
+            const shotRadio = document.querySelector('input[name="shot"]:checked');
+            const orientationRadio = document.querySelector('input[name="orientation"]:checked');
+
+            currentShot = shotRadio ? shotRadio.value : '';
+            currentOrientation = orientationRadio ? orientationRadio.value : '';
+
+            // Construir el prompt actualizado
+            let updatedPrompt = basePrompt;
+
+            // Agregar opciones técnicas al final del prompt
+            let technicalOptions = [];
+
+            if (currentShot) {
+                technicalOptions.push(currentShot);
+            }
+
+            if (currentOrientation) {
+                technicalOptions.push(currentOrientation);
+            }
+
+            // Si hay opciones técnicas, agregarlas al prompt
+            if (technicalOptions.length > 0) {
+                updatedPrompt = basePrompt + ' ' + technicalOptions.join(', ') + '.';
+            }
+
+            // Actualizar el texto mostrado
+            const resultPrompt = document.getElementById('resultPrompt');
+            resultPrompt.textContent = updatedPrompt;
+
+            // Actualizar la variable global
+            window.generatedPrompt = updatedPrompt;
         }
 
         // Copiar al portapapeles
@@ -1718,6 +1951,9 @@
             wordCount = 0;
             currentStep = 0;
             subjectCategory = 'general';
+            basePrompt = '';
+            currentShot = '';
+            currentOrientation = '';
 
             // Restaurar el HTML del input line completo
             const inputLine = document.getElementById('inputLine');
