@@ -46,6 +46,17 @@ git push origin <nombre-rama>
 **Repositorio remoto**: `https://github.com/jpablokhipu/step2prompt.git`
 **Rama principal**: No está explícitamente configurada (probablemente `main` o `master`, confirmar antes de crear PRs)
 
+### Despliegue
+
+El proyecto tiene configurado despliegue automático. **El despliegue se activa automáticamente al hacer push a `origin`**. No es necesario ejecutar comandos adicionales de despliegue.
+
+```bash
+# Subir cambios (esto automáticamente despliega)
+git push origin step2prompt
+```
+
+El servicio de despliegue detecta los cambios y actualiza la aplicación en producción automáticamente.
+
 ## Arquitectura de Alto Nivel
 
 ### Aplicación Web Step2Prompt (index.html)
