@@ -32,20 +32,34 @@
         }
 
         .brand-mark {
-            font-size: 0.9em;
-            font-weight: 500;
             margin-bottom: 60px;
             font-family: inherit;
-            letter-spacing: 0.02em;
-            line-height: 2;
+            line-height: 1.8;
         }
 
-        .brand-mark .step {
-            color: #4a4a4a;
+        .brand-logo {
+            font-size: 1.1em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: lowercase;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        .brand-mark .prompt {
+        .brand-logo .step {
+            color: #2c2c2c;
+        }
+
+        .brand-logo .prompt {
             color: #DC143C;
+            font-weight: 800;
+        }
+
+        .brand-tagline {
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #4a4a4a;
+            letter-spacing: 0.02em;
         }
 
         .static-question {
@@ -634,11 +648,19 @@
 
             .container {
                 min-height: auto;
+                text-align: left;
             }
 
             .brand-mark {
-                font-size: 0.85em;
                 margin-bottom: 12px;
+            }
+
+            .brand-logo {
+                font-size: 1em;
+            }
+
+            .brand-tagline {
+                font-size: 0.85em;
             }
 
             .static-question {
@@ -654,6 +676,7 @@
                 margin-bottom: 20px;
                 flex-direction: column;
                 align-items: flex-start;
+                justify-content: flex-start;
             }
 
             .input-line.input-shrinking {
@@ -681,18 +704,25 @@
             }
 
             /* Agrupar accumulated text items en columna */
+            .accumulated-text {
+                text-align: left;
+            }
+
             .accumulated-text div {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0;
+                justify-content: flex-start;
             }
 
             .accumulated-text .step-tag {
                 margin-bottom: 3px;
+                align-self: flex-start;
             }
 
             .accumulated-text .input-prefix {
                 margin-bottom: 0px;
+                align-self: flex-start;
             }
 
             .accumulated-text {
@@ -708,6 +738,7 @@
                 font-size: 0.35em;
                 padding: 3px 10px;
                 margin-top: 8px;
+                align-self: flex-start;
             }
 
             .input-prefix {
@@ -725,6 +756,7 @@
                 font-size: 0.9em;
                 margin-top: 15px;
                 line-height: 1.4;
+                text-align: left;
             }
 
             .tip-container {
@@ -904,8 +936,12 @@
     <div class="container">
         <!-- Marca -->
         <div class="brand-mark">
-            <span class="step">step2</span><span class="prompt">prompt</span><br>
-            Paso a paso hacia prompts que la IA realmente entiende
+            <div class="brand-logo">
+                <span class="step">step2</span><span class="prompt">prompt</span>
+            </div>
+            <div class="brand-tagline">
+                Paso a paso hacia prompts que la IA realmente entiende
+            </div>
         </div>
 
         <!-- Pregunta estática -->
