@@ -380,6 +380,7 @@
 
         .result-title {
             font-size: 1.3em;
+            margin-top: 0;
             margin-bottom: 20px;
             font-weight: bold;
             color: #2c2c2c;
@@ -468,6 +469,7 @@
         .result-prompt {
             font-size: 1.1em;
             line-height: 1.8;
+            margin-top: 20px;
             margin-bottom: 25px;
             padding: 20px;
             background: #ffffff;
@@ -502,6 +504,28 @@
         .button:active {
             transform: translateY(0);
             opacity: 0.8;
+        }
+
+        /* Botón copiar destacado en verde */
+        .button-copy {
+            background: #2D7A4F;
+            border-color: #2D7A4F;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .button-copy:hover {
+            background: #246B42;
+            border-color: #246B42;
+            color: #ffffff;
+        }
+
+        /* Grupo de botones */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .hidden {
@@ -929,6 +953,16 @@
             .options-group-title {
                 font-size: 0.85em;
             }
+
+            /* Grupo de botones en móvil */
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group .button {
+                width: 100%;
+                margin: 3px 0;
+            }
         }
     </style>
 </head>
@@ -978,8 +1012,8 @@
 
 
         <div class="result-container hidden" id="resultContainer">
+            <!-- Título AL INICIO -->
             <div class="result-title" id="resultTitle">✨ Tu prompt generado</div>
-            <div class="result-prompt" id="resultPrompt"></div>
 
             <!-- Opciones técnicas -->
             <div class="technical-options">
@@ -1054,8 +1088,14 @@
                 </div>
             </div>
 
-            <button class="button" onclick="copyToClipboard()">📋 Copiar prompt</button>
-            <button class="button" onclick="restart()">🔄 Crear nuevo</button>
+            <!-- Texto del prompt -->
+            <div class="result-prompt" id="resultPrompt"></div>
+
+            <!-- Botones AL FINAL -->
+            <div class="button-group">
+                <button class="button button-copy" onclick="copyToClipboard()">📋 Copiar prompt</button>
+                <button class="button" onclick="restart()">🔄 Crear nuevo</button>
+            </div>
         </div>
     </div>
 
